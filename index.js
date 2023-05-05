@@ -58,6 +58,7 @@ function View(info){
     .catch(console.log)
 }};
 
+//Function adds Department or Role or Employee depending on input
 function Add(info){
 
   if(info === 'Department'){
@@ -78,7 +79,7 @@ function Add(info){
       inquirer.prompt(Prompt3).then((answer) => {
         roles.forEach(element => { if(element.name === answer.Prompt3_3){depID = element.id} });
         db.query(`INSERT INTO role (title, salary, department_id) VALUES ("${answer.Prompt3_1}", ${answer.Prompt3_2}, ${depID})`); 
-        console.log(`Added', answer.Prompt3_1, 'role to the database`);
+        console.log('Added', answer.Prompt3_1, 'role to the database');
         init()
       })
     })
@@ -120,16 +121,46 @@ function Add(info){
   };
 };
 
+//Function updates employee role depending on input
+function Update(info){
+  let roleID;
+  let employeeID;
 
+  db.promise().query(`SELECT id, CONCAT(first_name, ' ', last_name) AS employee  FROM employee`) 
+  .then((result) => { 
+    result[0].forEach(element => { choice5_1.push(element.employee) });
+    employeeID = result[0];
+  })
+  .then(() => { 
+    db.promise().query(`SELECT id, title FROM role`) 
+    .then((result) => { 
+      result[0].forEach(element => { choice5_2.push(element.title) });
+      roleID = result[0]
+    })
+    .catch(console.log)
+  })
+  .then(() => {
+
+    inquirer.prompt(Prompt5).then((answer) => {      
+      employeeID.forEach(element => { if(element.employee === answer.Prompt5_1){ employeeID = element.id } }); 
+      roleID.forEach(element => { if(element.title === answer.Prompt5_2){ roleID = element.id } });    
+      db.query(`UPDATE employee SET role_id = ${roleID} WHERE id = ${employeeID}`);
+      console.log(answer.Prompt5_1, 'got promoted to', answer.Prompt5_2);
+      init()
+    })
+  })
+  .catch(console.log); 
+
+};
 
 //Selects action to be taken based on user input
 function AnswerCheck(answer){
-  let action1 = answer.Prompt1.split(' ')[0];
-  let data1 = answer.Prompt1.split(' ').pop();
+  let action = answer.Prompt1.split(' ')[0];
+  let data = answer.Prompt1.split(' ').pop();
 
-  if(action1 === 'View'){ View(data1) }
-  else if(action1 === 'Add'){ Add(data1) }
-  else{ console.log(answer.Prompt1)};
+  if(action === 'View'){ View(data) }
+  else if(action === 'Add'){ Add(data) }
+  else{ Update(data) };
 };
 
 const Prompt1 = [
