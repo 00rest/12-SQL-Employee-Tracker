@@ -76,7 +76,7 @@ THEN you are prompted to select:
 
 ![walktrough](/assets/images/walktrough.gif)
 
-![walktrough video](https://drive.google.com/file/d/1Q6T43lK7kKGtSwurSATu9QQHY6-qWOFJ/view)
+[walktrough video](https://drive.google.com/file/d/1Q6T43lK7kKGtSwurSATu9QQHY6-qWOFJ/view)
 
 ## License
 MIT License
